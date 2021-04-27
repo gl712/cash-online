@@ -1,6 +1,9 @@
 package com.gab.cashonline.cashBE.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,14 +18,21 @@ import com.gab.cashonline.cashBE.service.LoanService;
 @CrossOrigin
 public class LoanController {
 
+	private Logger logger = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	LoanService loanService;
 	
 	@GetMapping("")
-	public LoansPage retrieveLoans(@RequestParam(required = true) int page, @RequestParam(required = true) int size, @RequestParam(name = "user_id", required = false) Long userId) {
+	public ResponseEntity<LoansPage> retrieveLoans(@RequestParam(required = true) int page, @RequestParam(required = true) int size, @RequestParam(name = "user_id", required = false) Long userId) {
 
-		LoansPage retVal = loanService.getLoans(page, size, userId);
-		
-		return retVal;
+		try {
+			LoansPage loansPage = loanService.getLoans(page, size, userId);
+			return ResponseEntity.ok().body(loansPage);
+		} catch (Exception e) {
+			logger.error(String.format("Exception trying to retrieve loans. "
+					+ "page: %d, size: %d, userId: %s", page, size, userId), e);
+			return ResponseEntity.badRequest().build();
+		}
 	}
 }
