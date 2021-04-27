@@ -61,5 +61,13 @@ public class LoanControllerTest {
 			.andExpect(jsonPath("$.items[*].userId", Matchers.containsInAnyOrder(1, 1, 1, 1)));
 
     }
+    
+    @Test
+    @Order(3)
+    public void testMissingParameter() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/loans?page=1&user_id=1"))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+    }
 
 }

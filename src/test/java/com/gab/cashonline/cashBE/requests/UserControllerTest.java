@@ -78,4 +78,27 @@ public class UserControllerTest {
             .andExpect(MockMvcResultMatchers.status().isOk());
 
     }
+    
+    @Test
+    @Order(4)
+    public void testUserNotFound() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/users/8"))
+            .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+    }
+    
+    @Test
+    @Order(5)
+    public void testBadRequest() throws Exception {
+    	
+    	User newUser = new User();
+    	newUser.setFirstName("Lando");
+    	newUser.setLastName("Fiorini");
+    	
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/users")
+        		.contentType(MediaType.APPLICATION_JSON)
+        		.content(mapper.writeValueAsString(newUser)))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+    }
 }
