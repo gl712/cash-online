@@ -67,7 +67,7 @@ public class UserController {
 			return ResponseEntity.ok().body(users);
 		} catch (Exception e) {
 			logger.error(String.format("Exception retrieving all users"), e);
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.noContent().build();
 		}
 		
     }
@@ -82,7 +82,7 @@ public class UserController {
 					StringUtils.isEmpty(user.getLastName()) ||
 					StringUtils.isEmpty(user.getEmail())				
 					) {
-				logger.error(String.format("Bad Request trying to create user: ", mapper.writeValueAsString(user)));
+				logger.error(String.format("Bad Request trying to create user: %s", mapper.writeValueAsString(user)));
 				return ResponseEntity.badRequest().build();
 			}
 			
@@ -90,9 +90,9 @@ public class UserController {
 			return ResponseEntity.ok().body(created);
 		} catch (Exception e) {
 			try {
-				logger.error(String.format("Exception trying to create user: ", mapper.writeValueAsString(user)), e);
+				logger.error(String.format("Exception trying to create user: %s", mapper.writeValueAsString(user)), e);
 			} catch (JsonProcessingException e1) {
-				logger.error(String.format("Exception trying to create user"), e1);
+				logger.error(String.format("Exception trying to deserialize user"), e1);
 			}
 			return ResponseEntity.badRequest().build();
 		}
